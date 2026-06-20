@@ -372,47 +372,62 @@ background: linear-gradient(to right, rgba(17, 17, 17, 0.85) 0%, rgba(17, 17, 17
 .hero p { color: rgba(255, 255, 255, 0.85); font-size: 1.25rem; opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s; }
 .hero-buttons { display: flex; gap: 1rem; margin-top: 2rem; opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s; }
 
+/* ==========================================================================
+   UNIFIED INFLITE MARQUEE WITH LIVE INLINE SVGS
+   ========================================================================== */
 
 .hero-marquee-wrapper {
     position: absolute;
-    bottom: 30px; left: 0; width: 100%; padding: 10px 0; overflow: hidden; z-index: 2;
+    bottom: 30px; 
+    left: 0; 
+    width: 100%; 
+    padding: 10px 0; 
+    overflow: hidden; 
+    z-index: 2;
     -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
     mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-    pointer-events: none; opacity: 0; 
-    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
+    pointer-events: none; 
+    opacity: 1 !important; /* Kept fully visible to avoid fade-in animation bugs */
 }
 
-/* 1. Reset the track */
 .hero-marquee-track { 
     display: flex; 
-    width: max-content; /* Bring this back, but keep the animation on the parent */
-    animation: marquee 20s linear infinite;
-}
-
-/* 2. Remove min-width, use flex-shrink: 0 to lock items */
-.marquee-group {
-    display: flex;
-    flex-shrink: 0;
-}
-
-.marquee-item { 
-    display: flex; align-items: center; gap: 10px; padding: 0 40px; 
-    color: #FFFFFF; font-size: 1.5rem; font-weight: 700; 
-    white-space: nowrap; 
-}
-
-/* 3. The "Force" Animation */
-@keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-}
-
-/* 4. ANTI-FREEZE: Force the layer to stay active */
-.hero-marquee-track {
+    width: max-content; /* Locks the elements into an ultra-wide horizontal layout */
+    animation: marquee-infinite 20s linear infinite;
     -webkit-perspective: 1000px;
     perspective: 1000px;
     backface-visibility: hidden;
 }
+
+.marquee-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; /* Creates clean space between the icon and the text */
+    padding: 0 40px; /* Spacing separating each individual group */
+    color: #FFFFFF; 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    white-space: nowrap; 
+}
+
+/* Explicit layout engine override to force inline SVGs to display at exact dimensions */
+.marquee-item svg {
+    display: block !important;
+    width: 28px !important; 
+    height: 28px !important;
+    flex-shrink: 0 !important; /* Crucial: stops flexbox from crushing icons to 0px */
+}
+
+/* Perfect 50% loop animation */
+@keyframes marquee-infinite {
+    0% { 
+        transform: translate3d(0, 0, 0); 
+    }
+    100% { 
+        transform: translate3d(-50%, 0, 0); /* Shifts exactly one full set over before resetting */
+    }
+}
+
 
 /* --- Global Layout & Containers --- */
 main { position: relative; z-index: 10; background-color: var(--bg-color); box-shadow: 0 -20px 40px rgba(0,0,0,0.06); }
